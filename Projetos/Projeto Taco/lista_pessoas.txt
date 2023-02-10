@@ -1,0 +1,10 @@
+{'Nome': 'Rafael Pagliarin', 'Sexo': 'M', 'Peso': 103.0, 'Altura': 183.0, 'Data_Nascimento': datetime.date(1992, 3, 10), 'Idade': 30, 'Fator_Atividade': 1.5, 'GCD': '3290.58', 'Tabela_Cardapio':    Descrição dos alimentos Energia (kcal) Proteína (g) Lipídeos (g)  \
+0  Arroz, integral, cozido       306.4875     6.470625     2.500833   
+1         Brócolis, cozido        45.1965          3.2       0.6885   
+
+  Carboidrato (g) Fibra Alimentar (g) Quantidade Refeição  
+0       64.524375            6.873333      250.0   Almoço  
+1            6.55               5.125      150.0   Almoço  }
+{'Nome': 'Luis Felipe', 'Sexo': 'M', 'Peso': 80.0, 'Altura': 191.0, 'Data_Nascimento': datetime.date(1983, 2, 25), 'Idade': 39, 'Fator_Atividade': 1.4, 'GCD': '2598.78', 'Tabela_Cardapio': Empty DataFrame
+Columns: [Descrição dos alimentos, Energia (kcal), Proteína (g), Lipídeos (g), Carboidrato (g), Fibra Alimentar (g), Quantidade, Refeição]
+Index: []}

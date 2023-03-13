@@ -1,0 +1,1169 @@
+Anotações do Curso: "Curso SQL Completo 2022 [Iniciantes] + Desafios + Muita Prática"
+URL: https://youtu.be/G7bMwefn8RQ
+
+Usando SQL SERVER MICROSOFT
+
+CRUD - create,read, update, delete
+
+######################################################################################################
+
+OBS: no SQL podemos fazer comentários de duas meneiras
+
+1. usando '--'
+-- Comentário
+
+2. usando /* */
+/*
+
+comentário
+
+*/
+
+
+
+
+OBS:
+
+Para comentar varias linhas
+1. selecione as linhas
+2. aperte:  ctrl + k + c
+
+########################################## Aula 2 - Select ##########################################
+
+
+-> Os comandos são todos em Maiuscúlo (convenção)
+-> o * funciona igual na importação do python, significa "tudo"
+
+
+SELECT *
+FROM person.Person
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+
+A equipe de marketing precisa fazer uma pesquisa sobre nomes mais comuns de seus clientes e precisa do nome e sobrenome
+de todos os clientes que estão cadastrados no sistema.
+
+SELECT FirstName, LastName
+FROM person.Person
+
+########################################## AULA 3 - DISTINCT ##########################################
+
+é usado para omitir os dados duplicados
+
+SELECT DISTINCT coluna1,coluna2
+FROM tabela
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+
+Quantos sobrenomes unicos nós temos em nossa tabela Person.Person?
+
+SELECT DISTINCT LastName
+FROM person.Person
+
+1206
+
+########################################## AULA 4 - WHERE ##########################################
+
+usado para extrair apenas algumas informações da tabela
+
+SELECT coluna1,coluna2,coluna_n
+FROM tabela
+WHERE 'condicao'
+
+-=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=-
+OPERADORES LÓGICOS: (usados nas condições)
+-=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=-
+=   -> igual
+>   -> maior que
+<   -> menor que
+>=  -> maior ou igual que
+<=  -> menor ou igual que
+<>  -> diferente de
+AND -> operador lógico E
+OR  -> operador lógico OU
+-=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=-
+
+SELECT *
+FROM person.Person
+WHERE LastName = 'miller' and FirstName = 'anna'
+
+SELECT *
+FROM Production.Product
+WHERE color = 'blue' or color = 'black'
+
+SELECT *
+FROM Production.Product
+WHERE ListPrice > 1500 and ListPrice < 5000
+
+SELECT *
+FROM Production.Product
+WHERE color <> 'red'
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1.
+A equipe de produção de produtos precisa do nome de todas as peças que pesam mais de 500kg mas não mais do que 700kg
+para inspeção.
+peso = weight
+
+SELECT *
+FROM Production.Product
+WHERE Weight >= 500 and Weight <= 700
+
+4 produtos encontrados.
+
+
+2.
+Foi pedido pelo marketing uma relação de todos os empregados que são casados e são assalariados
+empregados = employees
+casados = married
+assalariado = salaried
+
+SELECT *
+FROM HumanResources.Employee
+WHERE MaritalStatus = 'M' and SalariedFlag = 1
+
+28 rows
+
+
+3.
+Um usuário chamado Peter Krebs está devendo um pagamento, consiga o email dela para que possamos enviar uma cobrança!
+(você vai ter que usar a tabela person.person e depois a tabela person.emailaddress)
+
+SELECT *
+FROM Person.Person
+WHERE FirstName = 'Peter' and LastName = 'Krebs'
+
+SELECT *
+FROM Person.EmailAddress
+WHERE BusinessEntityID = 26
+
+
+peter0@adventure-works.com
+
+########################################## AULA 5 - COUNT ##########################################
+serve para retornar o número de linhas (contagem) que bate com a definição pedida
+
+
+SELECT COUNT(*)
+FROM tabela
+
+SELECT count(DISTINCT Title)
+FROM Person.Person
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. quantos produtos temos cadastrados em nossa tabela de produtos
+
+SELECT count(*)
+FROM Production.Product
+
+R: 504
+
+2. quantos tamanhos de produtos temos cadastrados em nossa tabela
+
+SELECT count(Size)
+FROM Production.Product
+
+R: 211
+
+3. quantos tamanhos diferentes de produtos temos cadastrado em nossa tabela
+
+SELECT count(DISTINCT Size)
+FROM Production.Product
+
+R: 18
+
+########################################## AULA 6 - TOP ##########################################
+filtra/limita quantidade de dados retornadas pelo SELECT
+- mais usado em grandes bancos de dado
+
+SELECT TOP 10 *
+FROM tabela
+
+########################################## AULA 7 - ORDER BY ##########################################
+permite ordenar os resultados de uma pesquisa de forma crescente ou decrescente
+ps: o order by pode usar uma coluna não mostrada no select, mas não é recomendado
+
+SELECT coluna1,coluna2
+FROM tabela
+ORDER BY coluna1 asc/desc
+
+SELECT *
+FROM Person.Person
+ORDER BY FirstName asc
+
+SELECT *
+FROM Person.Person
+ORDER BY FirstName asc, LastName desc
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. Obter o ProductID dos 10 produtos mais caros cadastrados no sistema, listrando do mais caro para o mais barato
+
+SELECT top 10 ProductID, ListPrice
+FROM Production.Product
+ORDER BY ListPrice desc
+
+749	3578,27
+750	3578,27
+751	3578,27
+752	3578,27
+753	3578,27
+771	3399,99
+772	3399,99
+773	3399,99
+774	3399,99
+775	3374,99
+
+2. Obter o nome e numero do produto dos produtos que tenham o ProductID entre 1~4
+
+(as duas opções abaixo funcionam)
+
+SELECT Name, ProductNumber
+FROM Production.Product
+WHERE ProductID <= 4
+ORDER BY ProductID asc
+
+SELECT TOP 4 Name, ProductNumber
+FROM Production.Product
+ORDER BY ProductID asc
+
+
+Adjustable Race	AR-5381
+Bearing Ball	BA-8327
+BB Ball Bearing	BE-2349
+Headset Ball Bearings	BE-2908
+
+########################################## AULA 8 - BETWEEN ##########################################
+usado para encontrar valore entre um valor mínimo e valor máximo
+
+valor BETWEEN min AND max
+
+é a mesma coisa que
+
+valor >= min AND valor <= max
+
+
+SELECT *
+FROM Production.Product
+WHERE ListPrice between 1000 and 1500;
+
+SELECT *
+FROM Production.Product
+WHERE ListPrice NOT between 1000 and 1500;
+
+(também pode ser usado com o NOT, para excluir um range específico)
+
+Formato de data no SQL segue padrão AAAA/MM/DD
+
+SELECT *
+FROM HumanResources.Employee
+WHERE HireDate BETWEEN '2009/01/01' AND '2010/01/01'
+
+########################################## AULA 9 - IN ##########################################
+usamos o operador IN junto com o WHERE para verificar se um valor corresponde a outro valor passado
+
+valor IN (valor1, valor2)
+valor IN (SELECT valor FROM nomedatabela)
+
+SELECT *
+FROM Person.Person
+WHERE BusinessEntityID IN (2,7,13)
+
+(também pode ser usado com o NOT, para excluir um range específico)
+
+########################################## AULA 10 - LIKE ##########################################
+
+vamos dizer que você quer encontrar uma pessoa em um banco de dados mas vc não lembra exatamente o nome dela
+
+SELECT *
+FROM person.Person
+WHERE FirstName like 'ovi%' # começa com ovi
+
+SELECT *
+FROM person.Person
+WHERE FirstName like '%to' # termina com to
+
+SELECT *
+FROM person.Person
+WHERE FirstName like '%essa%' #quando a combinação está no meio
+
+SELECT *
+FROM person.Person
+WHERE FirstName like '%ro_' # o sublinhado substitui apenas 1 caracter
+
+OBS: no SQL o comando like não é casesensitive
+
+-=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=--=--=-=-=
+-=--=-=-=-=-=-=-=-=-=- Desafio Fundamentos até agora -=--=-=-=-=-=-=-=-=-=-
+-=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=--=--=-=-=-=-=-=-=-=-=--=--=-=-=
+
+1. Quantos produtos temos cadastrados no sistema que custam mais de 1500 dolares
+
+SELECT COUNT(*)
+FROM Production.Product
+WHERE ListPrice > 1500
+
+R: 39
+
+2. Quantas pessoas temos com o sobrenome que inicia com a letra P?
+
+SELECT COUNT(LastName)
+FROM Person.Person
+WHERE LastName LIKE 'P%'
+
+R: 1187
+
+3. Em quantas cidades únicas estão cadastrados nossos clientes?
+
+SELECT COUNT(DISTINCT City)
+FROM Person.Address
+
+R: 575
+
+4. Quais são as cidades únicas cadastradas em nosso sistema
+
+SELECT DISTINCT City
+FROM Person.Address
+
+5. Quantos produtos vermelhos tem o preço entre 500 e 1000 dolares
+
+SELECT COUNT(*)
+FROM Production.Product
+WHERE Color = 'Red'
+AND ListPrice BETWEEN 500 and 1000
+
+R: 11
+
+6. Quantos produtos cadastrados tem a palavra "road" em seu nome?
+
+SELECT COUNT(*)
+FROM Production.Product
+WHERE Name like '%road%'
+
+R: 103
+
+########################################## AULA 12 - MIN, MAX, SUM, AVG ##########################################
+
+funções de agregação -> agregam ou combinam dados de uma tabela em 1 resultado só
+
+-> SUM
+
+SELECT TOP 10 sum(linetotal) as 'Soma' #podemos usar "as... something" para nomear a coluna visualizada
+FROM Sales.SalesOrderDetail
+
+-> MIN
+
+SELECT TOP 10 MIN(Linetotal)
+FROM SALES.SalesOrderDetail
+
+-> Max
+
+SELECT TOP 10 MAX(Linetotal)
+FROM SALES.SalesOrderDetail
+
+-> AVG
+
+SELECT TOP 10 AVG(Linetotal)
+FROM SALES.SalesOrderDetail
+
+########################################## AULA 13 - GROUP BY ##########################################
+
+Group By -> divide o resultado da sua pesquisa em grupos
+
+Para cada grupo que você aplicar uma função de agregação, por exemplo:
+- calcular a soma de itens
+- contar o números de itens naquele grupo
+
+
+SELECT coluna1,funcaoagregacao(coluna2)
+FROM nomeTabela
+GROUP BY coluna1;
+
+
+SELECT specialofferID, SUM(UnitPrice) as 'Soma'
+FROM Sales.SalesOrderDetail
+GROUP BY SpecialOfferID
+
+
+-- quero saber quanto cada produto foi vendido até hoje
+
+SELECT ProductId, Count(ProductID) as 'contagem'
+FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+
+-- quantas vezes cada nome aparece no banco de dados?
+
+Select FirstName, Count(FirstName) as 'Contagem'
+FROM Person.Person
+GROUP BY FirstName
+
+-- na tabela production.product queremos saber qual a média de preço dos produtos que são prata(silver)
+
+SELECT COLOR, AVG(LISTPRICE)
+FROM Production.Product
+WHERE Color = 'silver'
+GROUP BY Color
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. Quantas pessoas tem o mesmo MiddleName agrupadas por MiddleName.
+
+SELECT MiddleName, count(MiddleName) as 'Quantidade'
+FROM Person.Person
+GROUP BY MiddleName
+
+
+2. Em média, qual é a quantidade de cada produto vendido na loja
+
+SELECT ProductID, AVG(OrderQty) as 'Média'
+FROM SALES.SalesOrderDetail
+GROUP BY ProductID
+
+3. Quais foram as 10 vendas que no total tiveram os maiores valores de venda(line total) por produto do maior valor para
+o menor
+
+SELECT TOP 10 ProductID, SUM(LineTotal) as 'Total de Venda'
+FROM SALES.SalesOrderDetail
+GROUP BY ProductID
+ORDER BY [Total de Venda] desc;
+
+4. Quantos produtos e qual quantidade media de produtos temos cadastradas nas nossas ordem de serviço (workOrder),
+agrupados por productID
+
+SELECT ProductID, COUNT(ProductID) as 'contagem', AVG(OrderQty) as 'Media'
+FROM Production.WorkOrder
+Group By ProductID
+
+
+########################################## AULA 14 - HAVING ##########################################
+
+é usado com o GROUP BY para filtrar resultados de um agrupamento
+
+basicamente um WHERE para dados agrupados
+
+SELECT coluna1, funcaoAgregacao(coluna2)
+FROM nomeTabela
+GROU BY coluna1
+HAVING condicao;
+
+-> Diferença entre HAVING e WHERE:
+    -> HAVING : depois que dados são agrupados
+    -> WHERE : antes que dados sejam agrupados
+
+
+
+-- quero saber quais nomes no sistema tem uma ocorrencia maior que 10 vezes:
+
+select FirstName, count(FirstName) as 'quantidade'
+from person.Person
+group by FirstName
+having count(FirstName) > 10
+
+-- queremos saber quais produtos que tenham total de vendas entre 162k e 500k
+
+SELECT ProductID, sum(linetotal) as 'Total'
+FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+HAVING SUM(LineTotal) between 162000 and 500000
+
+-- quer saber quais nomes no sistema tem ocorrencia maior que 10 vewzes, porem somente onde o título é 'Mr.'
+
+SELECT FirstName, COUNT(FirstName) AS 'quantidade'
+FROM person.Person
+WHERE Title = 'Mr.'
+GROUP BY FirstName
+HAVING COUNT(FirstName) > 10
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. Estamos querendo identificar as provincias(StateProvinceId) com o maior número de cadastros no nosso sistema,
+então é preciso encontrar quais províncias (stateProvinceId) estão registradas no banco de dados mais de 1000 vezes
+
+SELECT StateProvinceID, COUNT(StateProvinceID) as 'Quantidade'
+FROM Person.Address
+GROUP BY StateProvinceID
+HAVING COUNT(StateProvinceID) > 1000
+
+2. Como a empresa é uma MultiNacional, os gerentes querem saber quais produtos (productID) não estão trazendo em média,
+no mínimo, 1 milhão em total de vendas (lineTotal)
+
+Select ProductId, AVG(LineTotal) as 'Media'
+FROM Sales.SalesOrderDetail
+GROUP BY  ProductID
+HAVING AVG(LineTotal) < 1000000
+
+########################################## AULA 15 - AS ##########################################
+
+serve para renomear colunas (dar apelidos)
+
+SELECT TOP 10 AVG(ListPrice) AS "Preço Médio"
+FROM Production.Product
+
+OBS: as aspas são obrigatórias apenas se o nome do apelido for mais de 1 palavra, caso contrário é opcional
+OBS: também podemos usar aspas simples (funciona! mas não sei se é recomendado)
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. Encontrar o FirstName e LastName na tabela Person.Person e traduzilos
+
+SELECT FirstName as Nome, LastName as Sobrenome
+FROM Person.Person
+
+
+2. ProductNumber da tabela production.product para "Numero do Produto"
+
+SELECT ProductNumber as "Número do Produto"
+FROM Production.Product
+
+
+3. sales.salesorderDetail UnitPrice - preço unitário
+
+SELECT unitPrice as "Preço Unitário"
+FROM Sales.SalesOrderDetail
+
+
+########################################## AULA 16 - INNER JOIN ##########################################
+
+-> existem 3 tipos de JOIN:
+    -> INNER JOIN
+    -> OUTER JOIN
+    -> SELF-JOIN
+
+-- BusinessEntityID, FirstName, LastName, EmailAddress
+
+SELECT TOP 10 *
+FROM Person.Person
+
+SELECT TOP 10 *
+FROM Person.EmailAddress
+
+SELECT p.BusinessEntityID, p.FirstName, p.LastName, pe.EmailAddress
+FROM Person.Person as P
+INNER JOIN Person.EmailAddress PE on p.BusinessEntityID = pe.BusinessEntityID
+
+
+
+
+-- Queremos os nomes dos produtos e as informações de suas subcategorias
+-- ListPrice, Nome do Produto, Nome da Subcategoria
+
+SELECT *
+FROM Production.Product
+
+SELECT *
+FROM Production.ProductSubcategory
+
+SELECT PR.ListPrice, PR.Name, PS.Name as 'SubCategoria'
+FROM Production.Product as PR
+INNER JOIN Production.ProductSubcategory as PS on PS.ProductSubcategoryID = PR.ProductSubcategoryID
+
+
+
+
+-- fazer um join de tudo entre duas tabelas:
+
+SELECT TOP 10 *
+FROM Person.BusinessEntityAddress
+
+SELECT TOP 10 *
+FROM Person.Address
+
+SELECT TOP 10 *
+FROM Person.BusinessEntityAddress AS BA
+INNER JOIN Person.Address as PA on PA.AddressID = BA.AddressID
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. person.PhoneNumberType e person.PersonPhone:
+-> traga um resultado que inclua o businessentityid, name, phonenumbertypeid e phonenumber
+
+
+SELECT PP.BusinessEntityID, PT.Name, PT.PhoneNumberTypeID, PP.PhoneNumber
+FROM Person.PhoneNumberType AS PT
+INNER JOIN Person.PersonPhone AS PP ON PT.PhoneNumberTypeID = PP.PhoneNumberTypeID
+
+
+2. PERSON.STATEPROVINCE E PERSON.ADDRESS:
+-> traga um resultado que inclua o AddressId, City, StateProvinceID, Nome do Estado
+
+
+Select PA.AddressID, PA.City, PA.StateProvinceID, PS.Name as 'State'
+FROM Person.Address as PA
+INNER JOIN Person.StateProvince as PS on PS.StateProvinceID = PA.StateProvinceID
+
+
+########################################## AULA 17 - TIPOS DE JOINS ##########################################
+
+uma das questões mais usadas no SQL => JOINS
+
+1. para esclarecer:
+vamos imaginar que as tabelas interajam como conjuntos da matemática
+quando chamamos primeiro o "FROM tabela A", esta tabela A é considerada o conjunto da esquerda no diagrama
+quando chamamos "join tabela B" a tabela B é considerada o conjunto da direita no diagrama
+
+INNER JOIN -> A ∩ B - > retorna apenas os resultados que correspondem tanto na tabela A quanto na tabela B -> interseção
+
+
+FULL OUTER JOIN -> A + B -> retorna tudo de A + tudo de B, preenchendo com null aquilo que não existir em qualquer lado
+
+
+LEFT OUTER JOIN -> Tudo de A + correspondentes de B (excluindo o que seja apenas de B). Caso os dados não tenham
+registros correspondentes em B, preencherá com NULL
+
+LEFT OUTER JOIN = LEFT JOIN (abrev)
+
+RIGHT JOIN
+
+
+########################################## AULA 18 - OUTER JOIN ##########################################
+
+
+-- Quero descobrir quais pessoas tem um cartão de crédito registrado
+
+SELECT *
+FROM Person.Person PP
+LEFT JOIN Sales.PersonCreditCard PC
+ON PP.BusinessEntityID = PC.BusinessEntityID
+ -- INNER JOIN : 19118 rows
+ -- LEFT JOIN : 19972 rows
+ -- isso significa que temos 854 pessoas que não estão com os cartão registrados
+
+
+
+ -- para mostrar todos que não tem o cartão registrado
+ SELECT *
+FROM Person.Person PP
+LEFT JOIN Sales.PersonCreditCard PC
+ON PP.BusinessEntityID = PC.BusinessEntityID
+WHERE PC.BusinessEntityID IS NULL
+
+
+########################################## AULA 19 - UNION ##########################################
+
+o operador UNION combina dois ou mais resultados de um select em um resultado apenas
+-> UNION remove os dados duplicados
+-> UNION ALL para apresentar com dados duplicados
+
+SELECT coluna1, coluna2
+FROM tabela1
+UNION
+SELECT coluna1, coluna2
+FROM tabela2
+
+
+
+SELECT [ProductID], [Name], [ProductNumber]
+FROM Production.Product
+WHERE Name like '%Chain%'
+UNION
+SELECT [ProductID], [Name], [ProductNumber]
+FROM Production.Product
+WHERE Name like '%Decal%'
+
+mostrar todos os produtos que tenham "chain" e "decal" no nome
+
+
+
+SELECT FirstName, Title
+FROM person.Person
+WHERE Title = 'Mr.'
+UNION
+SELECT FirstName, Title
+FROM Person.Person
+WHERE MiddleName = 'A'
+
+mostra todas as pessoas (FirstName e Title) para pessoas que o Title seja Mr. e/ou middlename seja 'A'
+
+
+########################################## AULA 20 - SELF JOIN ##########################################
+
+self join só funciona se usar o alias (as ...)
+
+
+--SELECT NOME_COLUNA
+--FROM TABELA A, TABELA B
+--WHERE CONDICAO
+
+-- Eu quero todos os clientes que moram na mesma região
+
+SELECT A.ContactName, A.Region, B.CompanyName, B.Region
+FROM Customers A, Customers B
+WHERE A.Region = B.Region
+
+
+
+-- Quero encontrar (nome e data de constratação) de todos
+-- os funcionários que foram contratados no mesmo ano
+
+SELECT A.FirstName, A.HireDate, B.FirstName, B.HireDate
+FROM dbo.Employees A, dbo.Employees B
+WHERE DATEPART(YEAR,A.HireDate) = DATEPART(YEAR, B.HireDate)
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+Na tabela detalhe_de_pedido [OrderDetails] quais produtos tem o mesmo % de desconto
+
+SELECT A.ProductID, B.ProductID, A.Discount
+FROM [Order Details] A, [Order Details] B
+WHERE A.Discount = B.Discount
+
+
+
+########################################## AULA 21 - SUBQUERY ##########################################
+é basicamente um select dentro de outro select (também chamado de subselect)
+
+-- monte um relatório de todos os produtos cadastrados que tenham o preço de venda acima da média
+
+#### forma com 2 selects:
+
+SELECT AVG(ListPrice)
+FROM Production.Product
+
+SELECT *
+FROM Production.Product
+WHERE ListPrice > 438.66
+
+
+#### forma com subquery
+
+SELECT *
+FROM Production.Product
+WHERE ListPrice > (SELECT AVG(ListPrice) FROM Production.Product)
+
+
+-- Quero saber o nome dos funcionários que tem o cargo de "Design Engineer"
+SELECT FirstName
+FROM Person.Person
+WHERE BusinessEntityID IN (
+SELECT BusinessEntityID FROM HumanResources.Employee
+WHERE JobTitle = 'Design Engineer')
+
+
+#### usando o join para resolver o problema acima:
+
+SELECT P.FirstName
+FROM Person.Person P
+INNER JOIN HumanResources.Employee E ON P.BusinessEntityID = E.BusinessEntityID
+AND E.JobTitle = 'Design Engineer'
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+Encontre todos os endereços que estão no estado de 'Alberta', pode trazer todas as infos
+
+SELECT *
+FROM Person.Address
+WHERE StateProvinceID IN (
+SELECT StateProvinceID FROM Person.StateProvince
+WHERE Name = 'Alberta')
+
+########################################## AULA 22 - Datepart ##########################################
+-> Função para manipular datas.
+
+
+SELECT SalesOrderID, DATEPART(month, OrderDate) as 'mês'
+FROM Sales.SalesOrderHeader
+
+
+
+SELECT AVG(TotalDue) Media, DATEPART(month, OrderDate) as 'mes'
+FROM Sales.SalesOrderHeader
+GROUP BY DATEPART(month, OrderDate)
+ORDER BY mes
+
+########################################## AULA 23 - Manipulação de String ##########################################
+
+Operações em String
+
+-> CONCAT -> concatenar:
+
+SELECT CONCAT(FirstName,' ',LastName)
+FROM Person.Person
+
+
+-> UPPER -> tudo maiusculo:
+
+SELECT UPPER(FirstName)
+FROM Person.Person
+
+
+-> LOWER -> tudo minusculo:
+
+SELECT LOWER(FirstName)
+FROM Person.Person
+
+
+-> LEN -> tamanho da string (quantidade de caracteres):
+
+SELECT LEN(FirstName)
+FROM Person.Person
+
+-> SUBSTRING -> slicing de strings:
+
+SELECT FirstName, SUBSTRING(FirstName, 1, 3)
+FROM Person.Person
+
+SUBSTRING(tabela, indice_começo, indice_final)
+
+
+-> REPLACE -> substitui algo
+
+SELECT REPLACE(ProductNumber, '-', '#')
+FROM Production.Product
+
+REPLACE(tabela, oq quero substituir, pelo oq quero substituir)
+
+########################################## AULA 24 - Operações Matemáticas ##########################################
+
+não ensinou basicamente nada kkkk
+
+-- funções matemáticas sql server
+
+########################################## AULA 25 - Tipos de Dados ##########################################
+
+1. Boleanos
+2. Caractere
+3. Números
+4. Temporais
+
+-> 1. Boleano:
+Por padrão é inicializado como nulo, e pode receber tanto 1 ou 0
+BIT,
+
+-> 2. Caracteres:
+Tamanho fixo - char // permite inserir até uma quantidade fixa de caracteres e sempre ocupa todo o espaço reservado
+
+Tamanho variável - varchar ou nvarchar // permite inserir até uma qunatidade que for definida, porem só usa o espaço
+que for preenchido
+
+-> 3. Números:
+    Valores Exatos (inteiros)
+    (para ver a diferença exata, procurar na documentação - indiferente para o básico)
+
+        1. tinyint - não tem parte valor fracionario
+        2. smallint - limite maior
+        3. int - limite maior ainda
+        4. bigint - limite maior
+
+        5. NUMERIC ou DECIMAL - valores exatos, p[orem permite ter parte fracionado, que também pode ser especificado a
+        precisão e escala (escada é o número de digitos na parte fracional)
+
+    Valores Aproximados
+
+        1. REAL - tem precisão aproximada de até 15 digitos
+        2. FLOAT - mesmo conceito do REAL
+
+
+-> 4. Temporais:
+    DATE - armazena data no formato aaaa/mm/dd
+    DATETIME - armazena data e horas no formato aaaa/mm/dd:hh:mm:ss
+    DATETIME2 - armazena data, horas com adição de milissegundos no formato aaaa/mm/dd:hh:mm:ss:sssssss
+    SMALLDATETIME - data e hora respeitando o limite entre "1900-01-01:00:00:00" até "2079-06-06:23:59:59"
+    TIME - horas, minutos, segundos e milissegundos respeitando o limite entre "00:00:00.0000000" até "23:59:59.9999999"
+    DATETIMEOFFSET - permite armazenar informações de data e horas incluindo o fuso horário
+
+
+########################################## AULA 26 - Primary Key and Foreign Key ######################################
+
+* O que são chaves primarias e chaves estrangeiras
+* Exemplos de como usar eles para criar colunas e tabelas, porem vamos ver isso mais em detalhes
+na aula sobre criação de tabelas
+
+-> Primary Key ou Chave Primária
+* minhas palavras: é a coluna onde seus valores são unicos para cada linha, permitindo criar uma "identidade" na tabela
+baseado nessa coluna específica.
+
+* Chave Primária é basicamente uma coluna ou grupo de colunas, usada para identificar unicamente uma linha em uma tabela
+* São criadas através de restrições (constraints), que são regras que você define quando está criando uma coluna
+* Assim você estará criando um indice único para aquela coluna ou grupo de colunas
+
+CREATE TABLE nome_Tabela (
+    nomeColuna tipoDeDados PRIMARY KEY
+    nomeColuna tipoDeDados ...
+    )
+
+
+-> Foreign Key ou Chave Estrangeira
+* minhas palavras: é uma coluna da tabela que faz menção à primary key de outra tabela. para poder "linkar" as tabelas
+caso necessário
+
+* é uma colina ou grupo de colunas em uma tabela que identifica unicamente uma linha de outra tabela
+
+* ou seja, uma chave estrangeira é definida em uma tabela onde ela é apenas uma referencia e não contem todos os dados ali
+
+* então uma chave estrangeira é simplesmente uma coluna ou grupo de colunas que é uma chave primaria em outra tabela
+
+* a tabela que contem a chave estrangeira é chamada de tabela referenciadora ou tabela filho, enquanto a tabela na qual
+a chave estrangeira é referenciada é chamada de tabela referenciada ou tabela pai
+
+* uma tabela pode ter mais de uma chave estrangeira dependendo do seu relacionamento com as outras tabelas
+
+
+No SQL SERVER você define uma chave estrangeira através de um "Foreign Key Constraint" (ou restrição de chave estrangeira)
+
+Uma Foreign Key Constraint indica que os valores de uma coluna na tabela filho correspondem aos valores na tabela pai
+
+Nós podemos entender que uma chave estrangeira mantem a "integridade referencial"
+
+########################################## AULA 27 - Create Table ######################################
+
+CREATE TABLE nomeTabela(
+    coluna1 tipo restricaoDaColuna,
+    coluna2 tipo,
+    coluna3 tipo restricaoDaColuna,
+    ...
+)
+
+-> Principais tipos de restrições:
+    . NOT NULL -> não permite nulos
+    . UNIQUE -> força que todos os valores em uma coluna sejam diferentes
+    . PRIMARY KEY -> uma junção de NOT NULL e UNIQUE
+    . FOREIGN KEY -> identifica unicamente ma linha de outra tabela
+    . CHECK -> FORÇA uma condição especifica em uma coluna
+    . DEFAULT -> força um valor padrão quando nenhum valor é passado
+
+
+CREATE TABLE Canal(
+CanalId int Primary Key,
+Nome varchar(150) NOT NULL,
+ContagemInscritos int DEFAULT 0,
+DataCriacao DateTime NOT NULL
+);
+
+
+CREATE TABLE Video(
+VideoID int Primary Key,
+Nome varchar(150) NOT NULL,
+Vizualizacoes int DEFAULT 0,
+Likes int DEFAULT 0,
+Dislikes int DEFAULT 0,
+Duracao int NOT NULL,
+CanalID int Foreign Key REFERENCES Canal(CanalID)
+);
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+Encontre duas coisas na sua casa que podem ser transformadas em tabelas e crie 2 tabelas que tenham no mínimo
+1 relacionamento com a outra
+
+########################################## AULA 28 - Insert into ######################################
+
+pode ser usado para inserir valores em tabelas existentes ou criar tabelas utilizando as funções de insert into
+
+INSERT INTO nomeTabela(coluna1, coluna2, ...)
+VALUES(valor1, valor2)
+
+
+INSERT INTO nomeTabela(coluna1, coluna2, ...)
+VALUES(valor1, valor2)
+VALUES(valor1, valor2)
+VALUES(valor1, valor2)
+
+
+INSERT INTO TabelaA (coluna1)
+SELECT coluna2
+FROM TabelaB
+
+
+
+CREATE TABLE aula(
+id int primary key,
+nome varchar(200)
+);
+
+INSERT INTO aula(id, nome)
+VALUES(1, 'Aula 1');
+
+INSERT INTO aula(id, nome)
+Values
+(2, ' Aula 2'),
+(3, ' Aula 3'),
+(4, ' Aula 4');
+
+
+
+-> comando abaixo cria uma cópia da tabela selecionada
+
+SELECT *
+INTO TabelaNova
+FROM aula
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+1. crie uma tabela nova
+2. insira uma linha de dados nela
+3. insira 3 linhas de dados ao mesmo tempo
+4. crie uma segunda tabela
+5. insira 1 linha nessa nova tabela
+6. copie os dados da segunda tabela para a primeira  -----> NÃO CONSEGUI FAZER...
+
+
+########################################## AULA 29 - UPDATE ######################################
+
+UPDATE nomeTabela
+SET coluna1 = valor1
+    coluna2 = valor2
+WHERE condicao
+
+--> se esquecer a condicao vc vai acabar alterando a coluna TODA. é importante tomar cuidado.
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+altere o nome de duas linhas
+
+########################################## AULA 30 - DELETE ######################################
+
+apaga linha do banco de dados, tem que colocar condição. se não colocar ele apagará tudo da tabela selecionada
+
+DELETE FROM nomeTabela
+WHERE condicao
+
+########################################## AULA 31 - ALTER TABLE ######################################
+
+altera a estrutura de uma tabela
+
+ALTER TABLE nomeTabela
+AÇÃO
+
+. Exemplos do que pode ser feito:
+    . Add, Remover, ou alterar uma coluna
+    . Set valores padrões para uma coluna
+    . Add ou Remove restrições de colunas
+    . Renomear uma tabela
+
+
+ALTER TABLE youtube
+add ativo bit
+
+ALTER TABLE youtube
+ALTER COLUMN categoria varchar(300) not null
+
+
+
+obs: existe uma procidure específica para alterar o nome de uma coluna
+
+EXEC sp_RENAME 'youtube.nome', 'nomeCanal', 'COLUMN'
+                ('tabela.nome_atual', 'novo_nome', 'tipo')
+
+    obs: também para alterar o nome do banco de dados
+
+    EXEC sp_RENAME 'youtube', 'You_Tube'
+
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+Crie uma tabela nova com 3 colunas e depois
+    1. alterar o tipo de uma coluna
+    2. renomar uma coluna
+    3. renomear a tabela
+
+
+########################################## AULA 32 - DROP TABLE ######################################
+excluir uma tabela do banco de dados
+obs: vc só consegue 'dropar' tabelas que não são referenciadas por outras tabelas (possuem foreign key)
+
+
+DROP TABLE nomeTabela
+
+
+
+OBS: para deletar tudo de uma tabela, mas não deletar a tabela, usamos o truncate
+TRUNCATE TABLE Person.Password
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+Criar e dropar 2 tabelas.... lazy as fuck
+
+########################################## AULA 33 - CHECK CONSTRAINT ######################################
+
+cria restrições sobre valores que podem ser inseridos em uma coluna de uma tabela em banco de dados quando você
+está criando uma nova tabela
+
+CREATE TABLE CarteiraMotorista(
+    Id int NOT NULL,
+    Nome varchar(255) NOT NULL,
+    Idade int CHECK ( Idade >= 18)
+);
+
+
+# NÃO DEIXA
+INSERT INTO CarteiraMotorista (id, nome, idade)
+VALUES (1, 'Rafael', 17)
+
+
+# DEIXA
+INSERT INTO CarteiraMotorista (id, nome, idade)
+VALUES (1, 'Rafael', 31)
+
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=- Desafio -=-=-=-=-=-=-=-=-=-=-
+-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=--=-=-=-=-
+
+Crie 2 novas tabelas e 2 restrições para elas
+
+
+########################################## AULA 34 - NOT NULL CONSTRAINT ######################################
+
+
+CREATE TABLE CarteiraMotorista(
+    Id int NOT NULL,
+    Nome varchar(255) NOT NULL,
+    Idade int CHECK ( Idade >= 18)
+);
+
+########################################## AULA 35 - UNIQUE CONSTRAINT ######################################
+
+
+
+########################################## AULA 36 - VIEWS ######################################
+são tabelas criadas para consulta onde você usa outras tabelas como base para criar uma nova tabela de pesquisa
+com apenas dados específicos que você precisa de uma tabela.
+
+Normalmente usado para criar relatórios.
+
+CREATE VIEW [Pessoas Simplificado] AS
+SELECT FirstName, MiddleName, LastName
+FROM Person.Person
+WHERE Title = 'Mr.'
+
+
+select * from [Pessoas Simplificado]
